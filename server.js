@@ -11,6 +11,15 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.use((req, res, next) => {
+  let clientIP = req.ip;
+  if (clientIP.startsWith("::ffff:")) clientIP = clientIP.replace("::ffff:", "");
+  const allowedIPs = ["10.30.113.203", "127.0.0.1", "::1", "https://leadesgen.netlify.app/"];
+  console.log("📡 Request from:", clientIP);
+  if (allowedIPs.includes(clientIP)) return next();
+  else return res.status(403).json({ error: "Access denied: Unauthorized IP" });
+});
+
 // --- 🖥️ NEW API ENDPOINTS FOR VIEWING DATA FILES ---
 // ==========================================================
 
@@ -93,15 +102,6 @@ const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL; // Add your deployed Ap
 
 const client = new GoogleSearch(SERPAPI_KEY);
 
-// ✅ Allowed IPs
-app.use((req, res, next) => {
-  let clientIP = req.ip;
-  if (clientIP.startsWith("::ffff:")) clientIP = clientIP.replace("::ffff:", "");
-  const allowedIPs = ["10.30.113.203", "127.0.0.1", "::1"];
-  console.log("📡 Request from:", clientIP);
-  if (allowedIPs.includes(clientIP)) return next();
-  else return res.status(403).json({ error: "Access denied: Unauthorized IP" });
-});
 
 function extractEmails(text) {
   return text.match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g) || [];
