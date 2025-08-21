@@ -210,7 +210,7 @@ form.addEventListener("submit", async (e) => {
     const formData = new FormData(form);
     const payload = { site: formData.get("site"), location: formData.get("location"), category: formData.get("category"), num: parseInt(formData.get("num")) || 10 };
     try {
-        const res = await fetch("http://localhost:3000/search", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+        const res = await fetch("https://google-scarper.onrender.com/search", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
         const data = await res.json();
         if (data.length === 0) {
             resultsDiv.innerHTML = "No results found!";
@@ -252,16 +252,16 @@ async function loadFiles() { /* ... same as before ... */ }
 // --- NEW: DOWNLOAD BUTTON EVENT LISTENER ---
 downloadAllBtn.addEventListener('click', () => {
     // This simple line triggers the download endpoint on the server
-    window.location.href = 'http://localhost:3000/api/download-all';
+    window.location.href = 'https://google-scarper.onrender.com/api/download-all';
 });
 
 fileSelector.addEventListener("change", (e) => displayFileData(e.target.value));
 document.addEventListener("DOMContentLoaded", loadFiles);
 
 // --- UNCHANGED FUNCTIONS (for completeness) ---
-async function displayFileData(filename) {if (!filename) {tableContainer.innerHTML = ""; return; } tableContainer.innerHTML = "Loading data..."; try { const res = await fetch(`http://localhost:3000/api/data/${filename}`); if (!res.ok) throw new Error(`Failed to fetch data: ${res.statusText}`); const data = await res.json(); const table = createTableFromJSON(data); tableContainer.innerHTML = ""; tableContainer.appendChild(table); } catch (err) { tableContainer.innerHTML = `<p style="color: red;">Error: ${err.message}</p>`; console.error(err); } }
+async function displayFileData(filename) {if (!filename) {tableContainer.innerHTML = ""; return; } tableContainer.innerHTML = "Loading data..."; try { const res = await fetch(`https://google-scarper.onrender.com/api/data/${filename}`); if (!res.ok) throw new Error(`Failed to fetch data: ${res.statusText}`); const data = await res.json(); const table = createTableFromJSON(data); tableContainer.innerHTML = ""; tableContainer.appendChild(table); } catch (err) { tableContainer.innerHTML = `<p style="color: red;">Error: ${err.message}</p>`; console.error(err); } }
 function createTableFromJSON(jsonData) { if (!Array.isArray(jsonData) || jsonData.length === 0) { const p = document.createElement('p'); p.textContent = "No data to display in table."; return p; } const table = document.createElement("table"); table.className = "data-table"; const thead = table.createTHead(); const headerRow = thead.insertRow(); const headers = Object.keys(jsonData[0]); headers.forEach(headerText => { const th = document.createElement("th"); th.textContent = headerText; headerRow.appendChild(th); }); const tbody = table.createTBody(); jsonData.forEach(obj => { const row = tbody.insertRow(); headers.forEach(header => { const cell = row.insertCell(); cell.textContent = obj[header] !== null && obj[header] !== undefined ? obj[header] : ""; }); }); return table; }
-async function loadFiles() { try { const res = await fetch("http://localhost:3000/api/files"); const filenames = await res.json(); fileSelector.innerHTML = '<option value="">-- Please choose a file --</option>'; filenames.forEach(name => { const option = document.createElement("option"); option.value = name; option.textContent = name; fileSelector.appendChild(option); }); } catch (err) { console.error("Failed to load file list:", err); } }
+async function loadFiles() { try { const res = await fetch("https://google-scarper.onrender.com/api/files"); const filenames = await res.json(); fileSelector.innerHTML = '<option value="">-- Please choose a file --</option>'; filenames.forEach(name => { const option = document.createElement("option"); option.value = name; option.textContent = name; fileSelector.appendChild(option); }); } catch (err) { console.error("Failed to load file list:", err); } }
 </script>
 </body>
 </html>
