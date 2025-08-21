@@ -14,7 +14,7 @@ app.use(cors());
 app.use((req, res, next) => {
   let clientIP = req.ip;
   if (clientIP.startsWith("::ffff:")) clientIP = clientIP.replace("::ffff:", "");
-  const allowedIPs = ["10.30.113.203", "127.0.0.1", "::1", "https://leadesgen.netlify.app/"];
+  const allowedIPs = ["10.30.113.203", "127.0.0.1", "::1", "https://leadesgen.netlify.app"];
   console.log("📡 Request from:", clientIP);
   if (allowedIPs.includes(clientIP)) return next();
   else return res.status(403).json({ error: "Access denied: Unauthorized IP" });
